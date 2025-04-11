@@ -1,5 +1,6 @@
 # palindrome_with_tests.py
 import pytest
+import sys
 
 def is_palindrome(s: str) -> bool:
     """Проверяет, является ли строка палиндромом (игнорирует регистр и пробелы)."""
@@ -28,4 +29,23 @@ def test_with_special_chars():
 if __name__ == "__main__":
     print("Тест 'Madam':", is_palindrome("Madam"))  # True
     print("Тест 'Python':", is_palindrome("Python"))  # False
-    pytest.main([__file__, "-v"])
+    
+    # Запуск тестов с сохранением результатов в файл
+    with open('test_results.txt', 'w') as f:
+        # Перенаправляем вывод в файл
+        original_stdout = sys.stdout
+        sys.stdout = f
+        
+        # Запуск pytest с аргументами
+        pytest_args = [__file__, "-v"]
+        exit_code = pytest.main(pytest_args)
+        
+        # Восстанавливаем стандартный вывод
+        sys.stdout = original_stdout
+    
+    # Дублируем результаты в консоль
+    with open('test_results.txt', 'r') as f:
+        print("\nРезультаты тестов:\n" + f.read())
+    
+    # Завершаем с соответствующим кодом
+    sys.exit(exit_code)
